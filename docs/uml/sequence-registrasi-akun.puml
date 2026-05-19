@@ -1,0 +1,26 @@
+@startuml
+actor Guest
+participant "View" as V
+participant "Routes" as R
+participant "AuthController" as C
+participant "User (Model)" as M
+participant "Session" as S
+
+Guest -> V : Memilih menu Registrasi
+Guest -> V : Mengisi formulir (Nama, Email, Password, Konfirmasi, Role)
+Guest -> V : Menekan tombol "Daftar"
+V -> R : POST /register
+R -> C : register()
+C -> C : Memvalidasi input data
+alt Data valid & Email belum terdaftar?
+    C -> C : Enkripsi Password
+    C -> M : Simpan data ke Database
+    M --> C : Success
+    C -> S : Buat sesi login otomatis (Opsional)
+    C --> V : Redirect ke Dashboard (sesuai Role)
+    V --> Guest : Menampilkan pesan sukses registrasi
+else Tidak
+    C --> V : Kembalikan pesan error (Validation Error)
+    V --> Guest : Menampilkan error (Misal: "Email sudah digunakan")
+end
+@enduml

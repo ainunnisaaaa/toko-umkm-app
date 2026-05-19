@@ -1,0 +1,41 @@
+@startuml
+actor Penjual
+participant "View" as V
+participant "Routes" as R
+participant "OrderController" as C
+participant "Order (Model)" as M
+
+Penjual -> V : Membuka menu "Pesanan Masuk"
+V -> R : GET /seller/orders/incoming
+R -> C : incomingOrders()
+C -> M : Query pesanan dengan status "Menunggu Verifikasi"
+M --> C : Data Pesanan
+C --> V : Return View dengan data pesanan
+V --> Penjual : Tampilkan daftar pesanan "Menunggu Verifikasi"
+Penjual -> V : Klik detail pesanan
+Penjual -> V : Melihat gambar Bukti Pembayaran dari pembeli
+alt Bukti Pembayaran Valid?
+    Penjual -> V : Menekan tombol "Terima Pembayaran"
+    V -> R : PUT /seller/orders/{id}/accept
+    R -> C : acceptPayment()
+    C -> M : Ubah status pesanan -> "Diproses"
+    C --> V : Return Success
+    V --> Penjual : Notifikasi sukses
+    Penjual -> Penjual : Menyiapkan pesanan (Packing barang)
+    Penjual -> V : Memasukkan Nomor Resi Ekspedisi manual
+    Penjual -> V : Menekan tombol "Kirim Pesanan"
+    V -> R : PUT /seller/orders/{id}/ship
+    R -> C : shipOrder()
+    C -> M : Simpan nomor resi
+    C -> M : Ubah status pesanan -> "Dikirim"
+    C --> V : Return Success
+    V --> Penjual : Notifikasi sukses (Dikirim)
+else Tidak / Palsu
+    Penjual -> V : Menekan tombol "Tolak Pembayaran"
+    V -> R : PUT /seller/orders/{id}/reject
+    R -> C : rejectPayment()
+    C -> M : Ubah status pesanan -> "Dibatalkan" (atau Minta Upload Ulang)
+    C --> V : Return Success
+    V --> Penjual : Notifikasi pembayaran ditolak
+end
+@enduml

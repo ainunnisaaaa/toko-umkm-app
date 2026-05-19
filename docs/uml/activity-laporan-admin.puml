@@ -1,0 +1,20 @@
+@startuml
+|Admin|
+start
+:Membuka halaman "Dashboard Admin Sistem";
+|Sistem|
+:Hitung total toko terdaftar, total pengguna, dan total gross merchandise value (GMV);
+:Render statistik ringkasan platform;
+:Tampilkan Dashboard;
+|Admin|
+:Membuka menu "Laporan Komisi & Pendapatan Platform";
+:Menentukan parameter periode bulan;
+:Menekan tombol "Cetak PDF";
+|Sistem|
+:Query total nilai komisi (misal 2% dari transaksi selesai);
+:Render data ke dalam template HTML Laporan Admin;
+:Konversi menjadi dokumen PDF;
+|Admin|
+:Menerima file PDF Laporan Platform;
+stop
+@enduml

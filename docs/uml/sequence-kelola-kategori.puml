@@ -1,0 +1,27 @@
+@startuml
+actor Admin
+participant "View" as V
+participant "Routes" as R
+participant "CategoryController" as C
+participant "Category (Model)" as M
+
+Admin -> V : Membuka menu "Kategori Global"
+Admin -> V : Menekan tombol "Tambah Kategori Baru"
+V --> Admin : Tampilkan Form
+Admin -> V : Menginput nama kategori dan icon/gambar representasi
+Admin -> V : Menekan "Simpan"
+V -> R : POST /admin/categories
+R -> C : createCategory()
+C -> M : Validasi input nama kategori (Unique)
+alt Kategori Sudah ada?
+    M --> C : Invalid (Duplicate)
+    C --> V : Redirect Back with Error
+    V --> Admin : Tampilkan pesan error "Kategori sudah ada"
+else Tidak
+    M --> C : Valid
+    C -> M : Simpan data ke tabel Categories
+    M --> C : Success
+    C --> V : Redirect with Success Msg
+    V --> Admin : Menampilkan pesan sukses\n(Kategori baru tersedia untuk Penjual)
+end
+@enduml

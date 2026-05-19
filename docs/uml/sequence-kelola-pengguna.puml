@@ -1,0 +1,25 @@
+@startuml
+actor Admin
+participant "View" as V
+participant "Routes" as R
+participant "UserController" as C
+participant "User (Model)" as M
+
+Admin -> V : Membuka menu "Manajemen Pengguna"
+V -> R : GET /admin/users
+R -> C : index()
+C -> M : Ambil daftar seluruh Pengguna (Admin, Penjual, Pembeli)
+M --> C : Data Pengguna
+C --> V : Return View dengan data pengguna
+V --> Admin : Tampilkan daftar seluruh Pengguna
+Admin -> V : Mencari pengguna spesifik yang melanggar aturan
+Admin -> V : Menekan tombol "Ubah Status"
+Admin -> V : Memilih opsi "Blokir Akun" atau "Aktifkan Akun"
+Admin -> V : Konfirmasi aksi
+V -> R : PUT /admin/users/{id}/status
+R -> C : updateStatus()
+C -> M : Update kolom `is_active` atau `status` di tabel Users
+M --> C : Success Update
+C --> V : Return JSON / Redirect Back
+V --> Admin : Melihat notifikasi perubahan status berhasil
+@enduml

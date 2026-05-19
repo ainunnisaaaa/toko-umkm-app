@@ -1,0 +1,15 @@
+@startuml
+|Pembeli|
+start
+:Membuka menu Riwayat Pesanan;
+:Membuka detail pesanan tertentu;
+:Menekan tombol "Cetak Invoice";
+|Sistem|
+:Mengambil data order, order_items, info toko, dan info pembeli;
+:Merender tampilan HTML Invoice (Kop Surat, Tabel Barang, Total Harga);
+:Mengonversi HTML menjadi format PDF (menggunakan package PDF);
+:Memicu fungsi Download;
+|Pembeli|
+:Menerima dan mengunduh file Invoice.pdf;
+stop
+@enduml

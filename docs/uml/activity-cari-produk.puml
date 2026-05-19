@@ -1,0 +1,18 @@
+@startuml
+|Pembeli|
+start
+:Membuka halaman utama / katalog;
+:Menginput kata kunci atau memilih kategori;
+:Menekan tombol "Cari";
+|Sistem|
+:Query produk berdasarkan kriteria (Kata kunci, Kategori, Aktif);
+:Mengurutkan dan memfilter hasil (Harga, Rating);
+:Menampilkan daftar produk;
+|Pembeli|
+:Memilih salah satu produk;
+|Sistem|
+:Mengambil detail produk dari DB (Info, Toko, Stok, Ulasan);
+:Menampilkan halaman detail produk;
+|Pembeli|
+stop
+@enduml

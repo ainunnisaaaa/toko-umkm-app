@@ -1,0 +1,31 @@
+@startuml
+|Pembeli|
+start
+:Melihat detail produk;
+:Menentukan kuantitas barang;
+:Menekan tombol "Tambah ke Keranjang";
+|Sistem|
+:Validasi jumlah stok produk;
+if (Stok mencukupi?) then (Ya)
+  :Cek apakah produk sudah ada di keranjang;
+  if (Sudah ada?) then (Ya)
+    :Update kuantitas produk di keranjang;
+  else (Tidak)
+    :Tambahkan produk baru ke keranjang;
+  endif
+  :Simpan ke Session / DB Keranjang;
+  |Pembeli|
+  :Menampilkan pesan sukses;
+  :Membuka halaman Keranjang Belanja;
+  |Sistem|
+  :Menampilkan daftar barang, dikelompokkan per Toko;
+  |Pembeli|
+  :Mengubah kuantitas atau menghapus item;
+  |Sistem|
+  :Update total harga dan isi keranjang secara real-time;
+else (Tidak)
+  :Kembalikan pesan "Stok tidak mencukupi";
+endif
+|Pembeli|
+stop
+@enduml

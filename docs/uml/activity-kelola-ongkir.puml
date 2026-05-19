@@ -1,0 +1,18 @@
+@startuml
+|Admin|
+start
+:Membuka menu "Master Data Ongkos Kirim";
+|Sistem|
+:Tampilkan daftar wilayah/kota dan tarif ongkir statis;
+|Admin|
+:Menekan tombol "Tambah / Edit Tarif";
+:Memilih Provinsi dan Kota/Kabupaten tujuan;
+:Menginput nominal Tarif Dasar Pengiriman (Rp);
+:Menyimpan perubahan;
+|Sistem|
+:Validasi dan simpan nominal ongkir ke database;
+:Pembaruan harga ongkir akan langsung berlaku untuk checkout berikutnya;
+|Admin|
+:Menampilkan pesan sukses penyimpanan;
+stop
+@enduml

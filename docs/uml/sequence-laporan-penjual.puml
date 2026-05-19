@@ -1,0 +1,27 @@
+@startuml
+actor Penjual
+participant "View" as V
+participant "Routes" as R
+participant "ReportController" as C
+participant "Database" as M
+participant "Excel Package" as E
+
+Penjual -> V : Membuka halaman Dashboard Utama (Penjual)
+V -> R : GET /seller/dashboard
+R -> C : dashboard()
+C -> M : Hitung total omset, jumlah pesanan,\ndan daftar produk terlaris milik toko
+M --> C : Data Statistik
+C --> V : Render grafik (Line chart & Bar chart)
+V --> Penjual : Tampilkan ringkasan metrik
+Penjual -> V : Membuka menu "Laporan Penjualan"
+Penjual -> V : Memilih filter rentang tanggal (Start Date - End Date)
+Penjual -> V : Menekan tombol "Export Excel"
+V -> R : GET /seller/reports/sales/export?start=...&end=...
+R -> C : exportExcel()
+C -> M : Query data transaksi berstatus "Selesai"\nberdasarkan filter waktu
+M --> C : Data Transaksi
+C -> C : Mempersiapkan layout file Excel\n(produk, qty, harga, ongkir, komisi platform)
+C -> E : Generate file .xlsx (Laravel Excel)
+E --> C : File Excel
+C --> Penjual : Kirim file ke browser (Download)
+@enduml

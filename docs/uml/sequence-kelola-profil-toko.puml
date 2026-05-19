@@ -1,0 +1,34 @@
+@startuml
+actor Penjual
+participant "View" as V
+participant "Routes" as R
+participant "StoreController" as C
+participant "Store (Model)" as M
+
+Penjual -> V : Login ke Dashboard Penjual
+Penjual -> V : Membuka menu "Pengaturan Toko"
+V -> R : GET /seller/store/settings
+R -> C : edit()
+C -> M : Ambil data toko saat ini dari database
+M --> C : Data Toko
+C --> V : Return View dengan data toko
+V --> Penjual : Tampilkan formulir (Nama Toko, Deskripsi, Alamat, Logo)
+Penjual -> V : Mengubah isian form atau mengunggah gambar logo baru
+Penjual -> V : Menekan tombol "Simpan Perubahan"
+V -> R : PUT /seller/store/update
+R -> C : updateProfile()
+C -> C : Validasi input (Required, Format Gambar, Maksimal Size)
+alt Valid?
+    alt Ada unggahan logo baru?
+        C -> M : Upload file logo ke storage
+    else Tidak
+    end
+    C -> M : Update record tabel Stores
+    M --> C : Success Update
+    C --> V : Redirect with Success Msg
+    V --> Penjual : Menampilkan pesan sukses
+else Tidak
+    C --> V : Redirect Back with Validation Errors
+    V --> Penjual : Tampilkan error validasi
+end
+@enduml

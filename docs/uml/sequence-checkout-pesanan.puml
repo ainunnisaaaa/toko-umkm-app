@@ -1,0 +1,43 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "CheckoutController" as C
+participant "Model/Database" as M
+
+Pembeli -> V : Membuka halaman Keranjang Belanja
+Pembeli -> V : Memilih item yang akan dibeli
+Pembeli -> V : Menekan tombol "Checkout"
+V -> R : POST /checkout/init
+R -> C : initCheckout()
+C -> M : Mengelompokkan pesanan berdasarkan Toko
+M --> C : Data Dikelompokkan
+C -> C : Hitung Subtotal per toko
+C --> V : Tampilkan Halaman Checkout
+V --> Pembeli : Form Checkout
+Pembeli -> V : Mengisi detail alamat pengiriman
+Pembeli -> V : Memilih metode pengiriman (Provinsi, Kota)
+V -> R : POST /checkout/shipping
+R -> C : getShippingCost()
+C -> M : Mengambil tarif ongkir flat (Master Data) untuk kota tujuan
+M --> C : Tarif Ongkir
+C -> C : Kalkulasi Total Keseluruhan\n(Subtotal + Ongkir seluruh toko)
+C --> V : Tampilkan Total Keseluruhan
+V --> Pembeli : Update Total
+Pembeli -> V : Konfirmasi pesanan dan menekan "Buat Pesanan"
+V -> R : POST /checkout/process
+R -> C : createOrder()
+C -> M : Simpan record transaksi (Tabel Orders & Order_Items)
+C -> M : Kurangi stok produk
+C -> M : Ubah status pesanan menjadi "Menunggu Pembayaran"
+C --> V : Redirect ke Instruksi Pembayaran
+V --> Pembeli : Menampilkan halaman Instruksi Pembayaran & Total Tagihan
+Pembeli -> V : Mengunggah file foto Bukti Pembayaran
+V -> R : POST /checkout/payment
+R -> C : uploadPayment()
+C -> C : Validasi file gambar
+C -> M : Simpan bukti pembayaran
+C -> M : Ubah status pesanan menjadi "Menunggu Verifikasi"
+C --> V : Return View Status
+V --> Pembeli : Menampilkan pesan "Pembayaran sedang diproses penjual/admin"
+@enduml

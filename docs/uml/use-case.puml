@@ -1,0 +1,88 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Guest" as guest
+actor "Pembeli" as buyer
+actor "Penjual\n(Pemilik Toko)" as seller
+actor "Admin Sistem" as admin
+
+' Pewarisan: Pembeli dan Penjual pada dasarnya adalah Guest yang sudah login
+guest <|-- buyer
+guest <|-- seller
+
+rectangle "Sistem E-Commerce TokoKita" {
+  
+  package "Modul Autentikasi" {
+    usecase "Registrasi Akun" as UC_Reg
+    usecase "Login Aplikasi" as UC_Login
+    usecase "Lupa & Reset Password" as UC_Reset
+  }
+
+  package "Modul Pembeli (Belanja)" {
+    usecase "Eksplorasi & Cari Produk" as UC_Search
+    usecase "Kelola Keranjang (Multi-Toko)" as UC_Cart
+    usecase "Checkout Pesanan" as UC_Checkout
+    usecase "Pilih Tarif Ongkir (Statis)" as UC_Shipping
+    usecase "Upload Bukti Pembayaran" as UC_Payment
+    usecase "Lacak Status Pesanan" as UC_Track
+    usecase "Berikan Ulasan & Rating" as UC_Review
+    usecase "Cetak Invoice Pembelian" as UC_Invoice
+    
+    ' Dependencies pada Checkout
+    UC_Checkout ..> UC_Shipping : <<include>>
+    UC_Checkout ..> UC_Payment : <<include>>
+  }
+
+  package "Modul Penjual (Manajemen Toko)" {
+    usecase "Kelola Profil Toko" as UC_StoreProf
+    usecase "Kelola Kategori & Produk" as UC_Prod
+    usecase "Kelola Diskon Produk" as UC_Discount
+    usecase "Proses Pesanan Masuk" as UC_OrderManage
+    usecase "Verifikasi Bukti Bayar" as UC_VerifyPay
+    usecase "Pantau Dashboard Penjual" as UC_SellerDash
+    usecase "Unduh Laporan Toko\n(Penjualan, Stok, dsb)" as UC_SellerReport
+  }
+
+  package "Modul Admin (Manajemen Platform)" {
+    usecase "Kelola Data Pengguna (RBAC)" as UC_UserMgmt
+    usecase "Kelola Kategori Global" as UC_CatMgmt
+    usecase "Kelola Master Data Ongkir" as UC_OngkirMgmt
+    usecase "Pantau Dashboard Platform" as UC_AdminDash
+    usecase "Unduh Laporan Global\n(Komisi, Transaksi, dsb)" as UC_AdminReport
+  }
+}
+
+' Relasi Actor ke Use Case
+
+' Guest
+guest --> UC_Reg
+guest --> UC_Login
+guest --> UC_Reset
+guest --> UC_Search
+
+' Pembeli
+buyer --> UC_Cart
+buyer --> UC_Checkout
+buyer --> UC_Track
+buyer --> UC_Review
+buyer --> UC_Invoice
+
+' Penjual
+seller --> UC_StoreProf
+seller --> UC_Prod
+seller --> UC_Discount
+seller --> UC_OrderManage
+seller --> UC_VerifyPay
+seller --> UC_SellerDash
+seller --> UC_SellerReport
+
+' Admin
+admin --> UC_UserMgmt
+admin --> UC_CatMgmt
+admin --> UC_OngkirMgmt
+admin --> UC_AdminDash
+admin --> UC_AdminReport
+
+@enduml

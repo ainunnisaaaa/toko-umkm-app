@@ -1,0 +1,146 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+hide circle
+
+class User {
+  - id : BigInteger
+  - name : String
+  - email : String
+  - password : String
+  - role : Enum(Admin, Penjual, Pembeli)
+  - is_active : Boolean
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + register() : User
+  + login() : Boolean
+  + resetPassword() : void
+  + updateStatus(status: Boolean) : void
+}
+
+class Store {
+  - id : BigInteger
+  - user_id : BigInteger
+  - name : String
+  - description : Text
+  - address : Text
+  - logo : String
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + updateProfile(data: Array) : void
+  + getStatistics() : Array
+  + getBestSellingProducts() : Collection
+}
+
+class Category {
+  - id : BigInteger
+  - name : String
+  - icon : String
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + createCategory(data: Array) : Category
+}
+
+class Product {
+  - id : BigInteger
+  - store_id : BigInteger
+  - category_id : BigInteger
+  - name : String
+  - description : Text
+  - base_price : Decimal
+  - discount_price : Decimal
+  - stock : Integer
+  - image : String
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + checkStock(qty: Integer) : Boolean
+  + updateStock(qty: Integer) : void
+  + updatePrice(price: Decimal, discount: Decimal) : void
+  + calculateAverageRating() : Float
+}
+
+class Cart {
+  - id : BigInteger
+  - user_id : BigInteger
+  - product_id : BigInteger
+  - quantity : Integer
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + addItem(product_id: BigInteger, qty: Integer) : void
+  + updateItem(product_id: BigInteger, qty: Integer) : void
+  + removeItem(product_id: BigInteger) : void
+  + calculateTotal() : Decimal
+}
+
+class Order {
+  - id : BigInteger
+  - user_id : BigInteger
+  - store_id : BigInteger
+  - subtotal : Decimal
+  - shipping_cost : Decimal
+  - total_amount : Decimal
+  - status : Enum(Menunggu Pembayaran, Menunggu Verifikasi, Diproses, Dikirim, Selesai, Dibatalkan)
+  - payment_proof : String
+  - receipt_number : String
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + createOrder(cart_items: Collection, shipping: Decimal) : Order
+  + uploadPayment(proof: File) : void
+  + verifyPayment(isValid: Boolean) : void
+  + updateStatus(status: String) : void
+  + printInvoice() : File
+}
+
+class OrderItem {
+  - id : BigInteger
+  - order_id : BigInteger
+  - product_id : BigInteger
+  - quantity : Integer
+  - price : Decimal
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + getSubtotal() : Decimal
+}
+
+class ShippingRate {
+  - id : BigInteger
+  - province : String
+  - city : String
+  - cost : Decimal
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + getCost(city: String) : Decimal
+  + addRate(data: Array) : void
+  + updateRate(id: BigInteger, data: Array) : void
+}
+
+class Review {
+  - id : BigInteger
+  - order_id : BigInteger
+  - product_id : BigInteger
+  - user_id : BigInteger
+  - rating : Integer
+  - comment : Text
+  - created_at : Timestamp
+  - updated_at : Timestamp
+  + createReview(data: Array) : Review
+}
+
+User "1" -- "0..1" Store : has >
+User "1" -- "*" Cart : has >
+User "1" -- "*" Order : places >
+User "1" -- "*" Review : writes >
+
+Store "1" -- "*" Product : sells >
+Store "1" -- "*" Order : receives >
+
+Category "1" -- "*" Product : categorizes >
+
+Product "1" -- "*" Cart : added to <
+Product "1" -- "*" OrderItem : included in <
+Product "1" -- "*" Review : reviewed in <
+
+Order "1" *-- "*" OrderItem : contains >
+Order "1" -- "0..1" Review : has >
+
+@enduml

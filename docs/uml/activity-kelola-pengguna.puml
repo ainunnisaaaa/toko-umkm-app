@@ -1,0 +1,17 @@
+@startuml
+|Admin|
+start
+:Membuka menu "Manajemen Pengguna";
+|Sistem|
+:Tampilkan daftar seluruh Pengguna (Admin, Penjual, Pembeli);
+|Admin|
+:Mencari pengguna spesifik yang melanggar aturan;
+:Menekan tombol "Ubah Status";
+:Memilih opsi "Blokir Akun" atau "Aktifkan Akun";
+:Konfirmasi aksi;
+|Sistem|
+:Update kolom `is_active` atau `status` di tabel Users;
+|Admin|
+:Melihat notifikasi perubahan status berhasil;
+stop
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+|Pembeli|
+start
+:Membuka halaman Keranjang Belanja;
+:Memilih item yang akan dibeli;
+:Menekan tombol "Checkout";
+|Sistem|
+:Mengelompokkan pesanan berdasarkan Toko;
+:Hitung Subtotal per toko;
+|Pembeli|
+:Mengisi detail alamat pengiriman;
+:Memilih metode pengiriman (Provinsi, Kota tujuan);
+|Sistem|
+:Mengambil tarif ongkir flat (Master Data) untuk kota tujuan;
+:Kalkulasi Total Keseluruhan (Subtotal + Ongkir seluruh toko);
+|Pembeli|
+:Konfirmasi pesanan dan menekan "Buat Pesanan";
+|Sistem|
+:Simpan record transaksi (Tabel Orders & Order_Items);
+:Kurangi stok produk;
+:Ubah status pesanan menjadi "Menunggu Pembayaran";
+|Pembeli|
+:Menampilkan halaman Instruksi Pembayaran & Total Tagihan;
+:Mengunggah file foto Bukti Pembayaran;
+|Sistem|
+:Validasi file gambar;
+:Simpan bukti pembayaran;
+:Ubah status pesanan menjadi "Menunggu Verifikasi";
+|Pembeli|
+:Menampilkan pesan "Pembayaran sedang diproses penjual/admin";
+stop
+@enduml

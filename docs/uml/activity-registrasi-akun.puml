@@ -1,0 +1,23 @@
+@startuml
+|Guest|
+start
+:Memilih menu Registrasi;
+:Mengisi formulir (Nama, Email, Password, Konfirmasi Password, Role);
+:Menekan tombol "Daftar";
+|Sistem|
+:Memvalidasi input data;
+if (Data valid & Email belum terdaftar?) then (Ya)
+  :Enkripsi Password;
+  :Simpan data ke Database;
+  :Buat sesi login otomatis (Opsional);
+  |Guest|
+  :Menampilkan pesan sukses registrasi;
+  :Redirect ke Dashboard (sesuai Role);
+else (Tidak)
+  |Sistem|
+  :Kembalikan pesan error;
+  |Guest|
+  :Menampilkan error (Misal: "Email sudah digunakan");
+endif
+stop
+@enduml

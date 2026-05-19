@@ -1,0 +1,26 @@
+@startuml
+actor Admin
+participant "View" as V
+participant "Routes" as R
+participant "ShippingController" as C
+participant "Shipping (Model)" as M
+
+Admin -> V : Membuka menu "Master Data Ongkos Kirim"
+V -> R : GET /admin/shipping
+R -> C : index()
+C -> M : Ambil data wilayah/kota dan tarif ongkir statis
+M --> C : Data Tarif Ongkir
+C --> V : Return View dengan data tarif
+V --> Admin : Tampilkan daftar wilayah/kota dan tarif ongkir statis
+Admin -> V : Menekan tombol "Tambah / Edit Tarif"
+V --> Admin : Tampilkan Form
+Admin -> V : Memilih Provinsi dan Kota/Kabupaten tujuan
+Admin -> V : Menginput nominal Tarif Dasar Pengiriman (Rp)
+Admin -> V : Menyimpan perubahan
+V -> R : POST/PUT /admin/shipping
+R -> C : addRate() / updateRate()
+C -> M : Validasi dan simpan nominal ongkir ke database
+M --> C : Success
+C --> V : Redirect with Success Msg
+V --> Admin : Menampilkan pesan sukses penyimpanan
+@enduml

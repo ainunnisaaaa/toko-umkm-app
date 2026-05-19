@@ -1,0 +1,25 @@
+@startuml
+|Pembeli|
+start
+:Membuka menu "Riwayat Pesanan";
+|Sistem|
+:Ambil data pesanan milik pembeli dari DB;
+:Tampilkan daftar pesanan beserta status terkininya;
+|Pembeli|
+:Memilih salah satu pesanan untuk melihat detail;
+|Sistem|
+:Ambil informasi detail transaksi, alamat, dan nomor resi pengiriman;
+:Tampilkan Halaman Detail Pesanan;
+|Pembeli|
+if (Status == Dikirim?) then (Ya)
+  :Memeriksa nomor resi;
+  :Menerima paket fisik;
+  :Menekan tombol "Pesanan Diterima";
+  |Sistem|
+  :Ubah status pesanan menjadi "Selesai";
+else (Tidak)
+  :Menunggu proses selanjutnya;
+endif
+|Pembeli|
+stop
+@enduml

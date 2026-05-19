@@ -1,0 +1,27 @@
+@startuml
+|Penjual|
+start
+:Login ke Dashboard Penjual;
+:Membuka menu "Pengaturan Toko";
+|Sistem|
+:Ambil data toko saat ini dari database;
+:Tampilkan formulir (Nama Toko, Deskripsi, Alamat, Logo);
+|Penjual|
+:Mengubah isian form atau mengunggah gambar logo baru;
+:Menekan tombol "Simpan Perubahan";
+|Sistem|
+:Validasi input (Required, Format Gambar, Maksimal Size);
+if (Valid?) then (Ya)
+  if (Ada unggahan logo baru?) then (Ya)
+    :Upload file logo ke storage;
+  else (Tidak)
+  endif
+  :Update record tabel Stores;
+  |Penjual|
+  :Menampilkan pesan sukses;
+else (Tidak)
+  :Tampilkan error validasi;
+endif
+|Penjual|
+stop
+@enduml

@@ -1,0 +1,31 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "ReviewController" as C
+participant "Review/Product (Model)" as M
+
+Pembeli -> V : Membuka detail pesanan yang sudah berstatus "Selesai"
+V -> R : GET /orders/{id}
+R -> C : (OrderController) show()
+C -> M : Ambil status ulasan pesanan
+M --> C : Status Ulasan
+C --> V : Return View
+V --> Pembeli : Tampilkan halaman
+alt Sudah diberi ulasan?
+    V --> Pembeli : Tampilkan ulasan yang sudah diberikan
+else Belum
+    Pembeli -> V : Menekan tombol "Beri Ulasan"
+    Pembeli -> V : Mengisi Bintang (1-5) dan Komentar Deskriptif
+    Pembeli -> V : Menekan tombol "Kirim"
+    V -> R : POST /reviews
+    R -> C : createReview()
+    C -> C : Validasi input rating
+    C -> M : Simpan ulasan ke tabel Reviews
+    C -> M : Kalkulasi ulang rating rata-rata produk dan toko terkait
+    C -> M : Simpan update rating
+    M --> C : Success
+    C --> V : Return Success Response
+    V --> Pembeli : Menampilkan pesan "Terima kasih atas ulasan Anda"
+end
+@enduml

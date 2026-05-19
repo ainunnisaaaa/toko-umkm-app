@@ -1,0 +1,27 @@
+@startuml
+|Penjual|
+start
+:Membuka menu "Katalog Produk";
+:Menekan tombol "Tambah Produk Baru";
+:Mengisi form (Nama, Deskripsi, Harga, Stok, Kategori, Foto Utama);
+:Menekan tombol "Simpan";
+|Sistem|
+:Validasi data input;
+if (Data Valid?) then (Ya)
+  :Upload file foto ke storage;
+  :Simpan data ke tabel Products;
+  |Penjual|
+  :Menampilkan pesan produk berhasil ditambahkan;
+else (Tidak)
+  :Menampilkan pesan error form;
+endif
+|Penjual|
+:Memilih aksi Edit pada produk yang sudah ada;
+:Mengubah Harga Dasar atau memasukkan Harga Diskon;
+:Menyimpan perubahan;
+|Sistem|
+:Update field Harga & Diskon di tabel Products;
+:Kembalikan respon sukses;
+|Penjual|
+stop
+@enduml

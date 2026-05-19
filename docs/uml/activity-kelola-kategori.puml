@@ -1,0 +1,19 @@
+@startuml
+|Admin|
+start
+:Membuka menu "Kategori Global";
+:Menekan tombol "Tambah Kategori Baru";
+:Menginput nama kategori dan icon/gambar representasi;
+:Menekan "Simpan";
+|Sistem|
+:Validasi input nama kategori (Unique);
+if (Sudah ada?) then (Ya)
+  :Tampilkan pesan error "Kategori sudah ada";
+else (Tidak)
+  :Simpan data ke tabel Categories;
+  :Kategori baru tersedia untuk digunakan oleh Penjual;
+  |Admin|
+  :Menampilkan pesan sukses;
+endif
+stop
+@enduml

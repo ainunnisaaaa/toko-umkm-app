@@ -1,0 +1,41 @@
+@startuml
+actor Guest
+participant "View" as V
+participant "Routes" as R
+participant "AuthController" as C
+participant "User (Model)" as M
+participant "Session" as S
+
+Guest -> V : Membuka halaman Login
+Guest -> V : Menginput Email dan Password
+Guest -> V : Menekan tombol "Login"
+V -> R : POST /login
+R -> C : login()
+C -> M : Mencari akun berdasarkan Email
+M --> C : Data Akun
+alt Akun ditemukan?
+    C -> C : Verifikasi hash Password
+    alt Password cocok?
+        C -> C : Periksa status akun (Aktif/Blokir)
+        alt Akun Aktif?
+            C -> S : Buat session pengguna
+            alt Role == Admin?
+                C --> V : Redirect ke Dashboard Admin
+            else Role == Penjual?
+                C --> V : Redirect ke Dashboard Penjual
+            else Pembeli
+                C --> V : Redirect ke Beranda Pembeli
+            end
+        else Tidak (Blokir)
+            C --> V : Redirect Back with Error
+            V --> Guest : Tampilkan error "Akun diblokir"
+        end
+    else Tidak (Password salah)
+        C --> V : Redirect Back with Error
+        V --> Guest : Tampilkan error "Password salah"
+    end
+else Tidak (Email tidak terdaftar)
+    C --> V : Redirect Back with Error
+    V --> Guest : Tampilkan error "Email tidak terdaftar"
+end
+@enduml

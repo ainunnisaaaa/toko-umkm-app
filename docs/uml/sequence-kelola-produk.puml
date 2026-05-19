@@ -1,0 +1,37 @@
+@startuml
+actor Penjual
+participant "View" as V
+participant "Routes" as R
+participant "ProductController" as C
+participant "Product (Model)" as M
+
+Penjual -> V : Membuka menu "Katalog Produk"
+Penjual -> V : Menekan tombol "Tambah Produk Baru"
+V --> Penjual : Tampilkan Form Tambah Produk
+Penjual -> V : Mengisi form (Nama, Deskripsi, Harga, Stok, Kategori, Foto Utama)
+Penjual -> V : Menekan tombol "Simpan"
+V -> R : POST /seller/products
+R -> C : store()
+C -> C : Validasi data input
+alt Data Valid?
+    C -> M : Upload file foto ke storage
+    C -> M : Simpan data ke tabel Products
+    M --> C : Success
+    C --> V : Redirect with Success Msg
+    V --> Penjual : Menampilkan pesan produk berhasil ditambahkan
+else Tidak
+    C --> V : Redirect Back with Validation Errors
+    V --> Penjual : Menampilkan pesan error form
+end
+
+Penjual -> V : Memilih aksi Edit pada produk yang sudah ada
+V --> Penjual : Tampilkan Form Edit
+Penjual -> V : Mengubah Harga Dasar atau memasukkan Harga Diskon
+Penjual -> V : Menyimpan perubahan
+V -> R : PUT /seller/products/{id}
+R -> C : update()
+C -> M : Update field Harga & Diskon di tabel Products
+M --> C : Success Update
+C --> V : Kembalikan respon sukses
+V --> Penjual : Menampilkan notifikasi sukses
+@enduml

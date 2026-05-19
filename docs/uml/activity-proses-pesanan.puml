@@ -1,0 +1,29 @@
+@startuml
+|Penjual|
+start
+:Membuka menu "Pesanan Masuk";
+|Sistem|
+:Tampilkan daftar pesanan dengan status "Menunggu Verifikasi";
+|Penjual|
+:Klik detail pesanan;
+:Melihat gambar Bukti Pembayaran dari pembeli;
+if (Bukti Pembayaran Valid?) then (Ya)
+  :Menekan tombol "Terima Pembayaran";
+  |Sistem|
+  :Ubah status pesanan -> "Diproses";
+  |Penjual|
+  :Menyiapkan pesanan (Packing barang);
+  :Menekan tombol "Kirim Pesanan";
+  :Memasukkan Nomor Resi Ekspedisi manual;
+  |Sistem|
+  :Simpan nomor resi;
+  :Ubah status pesanan -> "Dikirim";
+else (Tidak / Palsu)
+  |Penjual|
+  :Menekan tombol "Tolak Pembayaran";
+  |Sistem|
+  :Ubah status pesanan -> "Dibatalkan" (atau Minta Upload Ulang);
+endif
+|Penjual|
+stop
+@enduml

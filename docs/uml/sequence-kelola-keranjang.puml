@@ -1,0 +1,45 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "CartController" as C
+participant "Product (Model)" as M
+participant "Cart (Model/Session)" as S
+
+Pembeli -> V : Melihat detail produk
+Pembeli -> V : Menentukan kuantitas barang
+Pembeli -> V : Menekan tombol "Tambah ke Keranjang"
+V -> R : POST /cart/add
+R -> C : addItem()
+C -> M : Validasi jumlah stok produk
+M --> C : Stok Status
+alt Stok mencukupi?
+    C -> S : Cek apakah produk sudah ada di keranjang
+    S --> C : Status Keberadaan
+    alt Sudah ada?
+        C -> S : Update kuantitas produk di keranjang
+    else Tidak
+        C -> S : Tambahkan produk baru ke keranjang
+    end
+    C -> S : Simpan ke Session / DB Keranjang
+    C --> V : Return Success Response
+    V --> Pembeli : Menampilkan pesan sukses
+    Pembeli -> V : Membuka halaman Keranjang Belanja
+    V -> R : GET /cart
+    R -> C : index()
+    C -> S : Ambil data keranjang
+    S --> C : Data Keranjang
+    C --> V : Return View dengan data keranjang
+    V --> Pembeli : Menampilkan daftar barang, dikelompokkan per Toko
+    Pembeli -> V : Mengubah kuantitas atau menghapus item
+    V -> R : PUT/DELETE /cart/{id}
+    R -> C : updateItem() / removeItem()
+    C -> S : Update isi keranjang
+    C -> C : Update total harga
+    C --> V : Return JSON / Updated Data
+    V --> Pembeli : Update total harga dan isi keranjang secara real-time
+else Tidak
+    C --> V : Return Error Response
+    V --> Pembeli : Kembalikan pesan "Stok tidak mencukupi"
+end
+@enduml

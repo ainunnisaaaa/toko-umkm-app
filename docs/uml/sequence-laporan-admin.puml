@@ -1,0 +1,28 @@
+@startuml
+actor Admin
+participant "View" as V
+participant "Routes" as R
+participant "ReportController" as C
+participant "Database" as M
+participant "PDF Package" as P
+
+Admin -> V : Membuka halaman "Dashboard Admin Sistem"
+V -> R : GET /admin/dashboard
+R -> C : dashboard()
+C -> M : Hitung total toko terdaftar, total pengguna,\ndan total gross merchandise value (GMV)
+M --> C : Data Statistik
+C --> V : Render statistik ringkasan platform
+V --> Admin : Tampilkan Dashboard
+Admin -> V : Membuka menu "Laporan Komisi & Pendapatan Platform"
+Admin -> V : Menentukan parameter periode bulan
+Admin -> V : Menekan tombol "Cetak PDF"
+V -> R : GET /admin/reports/commission?month=...
+R -> C : printCommissionReport()
+C -> M : Query total nilai komisi (2% dari transaksi selesai)
+M --> C : Data Komisi
+C -> V : Render data ke dalam template HTML Laporan
+V --> C : HTML Ter-render
+C -> P : Konversi menjadi dokumen PDF
+P --> C : File PDF
+C --> Admin : Menerima file PDF Laporan Platform (Download)
+@enduml

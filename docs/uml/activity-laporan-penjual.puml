@@ -1,0 +1,21 @@
+@startuml
+|Penjual|
+start
+:Membuka halaman Dashboard Utama (Penjual);
+|Sistem|
+:Hitung total omset, jumlah pesanan, dan daftar produk terlaris milik toko tersebut;
+:Render grafik (Line chart & Bar chart);
+:Tampilkan ringkasan metrik;
+|Penjual|
+:Membuka menu "Laporan Penjualan";
+:Memilih filter rentang tanggal (Start Date - End Date);
+:Menekan tombol "Export Excel";
+|Sistem|
+:Query data transaksi yang berstatus "Selesai" berdasarkan filter waktu;
+:Mempersiapkan layout file Excel (Mendata produk, qty, harga, ongkir, komisi platform);
+:Generate file .xlsx (menggunakan library Laravel Excel);
+:Kirim file ke browser;
+|Penjual|
+:Mengunduh file Excel Laporan;
+stop
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+|Guest|
+start
+:Membuka halaman Login;
+:Menginput Email dan Password;
+:Menekan tombol "Login";
+|Sistem|
+:Mencari akun berdasarkan Email;
+if (Akun ditemukan?) then (Ya)
+  :Verifikasi hash Password;
+  if (Password cocok?) then (Ya)
+    :Periksa status akun (Aktif/Blokir);
+    if (Akun Aktif?) then (Ya)
+      :Buat session pengguna;
+      if (Role == Admin?) then (Ya)
+        :Redirect ke Dashboard Admin;
+      elseif (Role == Penjual?) then (Ya)
+        :Redirect ke Dashboard Penjual;
+      else (Pembeli)
+        :Redirect ke Beranda Pembeli;
+      endif
+    else (Tidak)
+      :Tampilkan error "Akun diblokir";
+    endif
+  else (Tidak)
+    :Tampilkan error "Password salah";
+  endif
+else (Tidak)
+  :Tampilkan error "Email tidak terdaftar";
+endif
+|Guest|
+stop
+@enduml

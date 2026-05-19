@@ -1,0 +1,22 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "OrderController" as C
+participant "Order (Model)" as M
+participant "PDF Package" as P
+
+Pembeli -> V : Membuka menu Riwayat Pesanan
+Pembeli -> V : Membuka detail pesanan tertentu
+Pembeli -> V : Menekan tombol "Cetak Invoice"
+V -> R : GET /orders/{id}/invoice
+R -> C : printInvoice()
+C -> M : Mengambil data order, order_items,\ninfo toko, dan info pembeli
+M --> C : Data Order Lengkap
+C -> V : Merender tampilan HTML Invoice\n(Kop Surat, Tabel Barang, Total Harga)
+V --> C : HTML Ter-render
+C -> P : Mengonversi HTML menjadi PDF
+P --> C : File PDF
+C --> Pembeli : Memicu fungsi Download (Response PDF)
+Pembeli -> Pembeli : Menerima dan mengunduh file Invoice.pdf
+@enduml

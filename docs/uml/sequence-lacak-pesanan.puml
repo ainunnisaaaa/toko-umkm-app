@@ -1,0 +1,36 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "OrderController" as C
+participant "Order (Model)" as M
+
+Pembeli -> V : Membuka menu "Riwayat Pesanan"
+V -> R : GET /orders
+R -> C : index()
+C -> M : Ambil data pesanan milik pembeli dari DB
+M --> C : Data Pesanan
+C --> V : Return View Data Pesanan
+V --> Pembeli : Tampilkan daftar pesanan beserta status terkininya
+Pembeli -> V : Memilih salah satu pesanan untuk melihat detail
+V -> R : GET /orders/{id}
+R -> C : show()
+C -> M : Ambil informasi detail transaksi, alamat, dan nomor resi pengiriman
+M --> C : Detail Pesanan
+C --> V : Return View Detail
+V --> Pembeli : Tampilkan Halaman Detail Pesanan
+
+alt Status == Dikirim?
+    Pembeli -> V : Memeriksa nomor resi
+    Pembeli -> Pembeli : Menerima paket fisik
+    Pembeli -> V : Menekan tombol "Pesanan Diterima"
+    V -> R : PUT /orders/{id}/complete
+    R -> C : completeOrder()
+    C -> M : Ubah status pesanan menjadi "Selesai"
+    M --> C : Success Update
+    C --> V : Redirect with Success Msg
+    V --> Pembeli : Notifikasi pesanan selesai
+else Tidak
+    Pembeli -> Pembeli : Menunggu proses selanjutnya
+end
+@enduml

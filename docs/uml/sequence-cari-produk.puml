@@ -1,0 +1,26 @@
+@startuml
+actor Pembeli
+participant "View" as V
+participant "Routes" as R
+participant "ProductController" as C
+participant "Product (Model)" as M
+
+Pembeli -> V : Membuka halaman utama / katalog
+Pembeli -> V : Menginput kata kunci atau memilih kategori
+Pembeli -> V : Menekan tombol "Cari"
+V -> R : GET /products?search=...
+R -> C : search()
+C -> M : Query produk berdasarkan kriteria\n(Kata kunci, Kategori, Aktif)
+M --> C : Data Produk
+C -> M : Mengurutkan dan memfilter hasil (Harga, Rating)
+M --> C : Data Terfilter
+C --> V : Return View dengan data produk
+V --> Pembeli : Menampilkan daftar produk
+Pembeli -> V : Memilih salah satu produk
+V -> R : GET /products/{id}
+R -> C : show()
+C -> M : Mengambil detail produk dari DB\n(Info, Toko, Stok, Ulasan)
+M --> C : Detail Produk
+C --> V : Return View detail produk
+V --> Pembeli : Menampilkan halaman detail produk
+@enduml

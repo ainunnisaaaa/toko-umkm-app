@@ -1,0 +1,22 @@
+@startuml
+|Pembeli|
+start
+:Membuka detail pesanan yang sudah berstatus "Selesai";
+if (Sudah diberi ulasan?) then (Belum)
+  :Menekan tombol "Beri Ulasan";
+  :Mengisi Bintang (1-5) dan Komentar Deskriptif;
+  :Menekan tombol "Kirim";
+  |Sistem|
+  :Validasi input rating;
+  :Simpan ulasan ke tabel Reviews;
+  :Kalkulasi ulang rating rata-rata produk dan toko terkait;
+  :Simpan update rating;
+  |Pembeli|
+  :Menampilkan pesan "Terima kasih atas ulasan Anda";
+else (Sudah)
+  |Sistem|
+  :Tampilkan ulasan yang sudah diberikan;
+endif
+|Pembeli|
+stop
+@enduml
