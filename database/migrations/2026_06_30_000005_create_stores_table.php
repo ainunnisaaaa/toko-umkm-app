@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->text('address');
-            $table->string('logo');
-            $table->decimal('rating', 3, 2);
+            $table->string('logo')->nullable();
+            $table->decimal('rating', 3, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

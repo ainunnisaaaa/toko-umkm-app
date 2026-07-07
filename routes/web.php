@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProductController as PublicProductController;
 use Illuminate\Support\Facades\Route;
 
 // Admin Controllers
@@ -11,7 +10,6 @@ use App\Http\Controllers\Admin\ShippingRateController;
 
 // Seller Controllers
 use App\Http\Controllers\Seller\StoreController;
-use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 
 // Buyer Controllers
@@ -46,7 +44,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Public Routes
-Route::get('/products/{product}', [PublicProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -58,7 +56,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // Seller Routes
 Route::middleware(['auth', 'role:seller'])->prefix('seller')->name('seller.')->group(function () {
     Route::resource('stores', StoreController::class);
-    Route::resource('products', ProductController::class);
+    Route::resource('products', \App\Http\Controllers\Seller\ProductController::class);
     Route::resource('orders', SellerOrderController::class);
 });
 

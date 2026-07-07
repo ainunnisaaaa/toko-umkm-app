@@ -16,13 +16,13 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->decimal('base_price', 12, 2);
             $table->decimal('discount_price', 12, 2)->nullable();
             $table->integer('stock');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->decimal('rating', 3, 2);
+            $table->decimal('rating', 3, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
 

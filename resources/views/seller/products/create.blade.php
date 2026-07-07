@@ -11,13 +11,19 @@
     </x-slot>
 
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-        <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data"
+            x-data="{ 
+                name: '{{ addslashes(old('name')) }}', 
+                stock: '{{ old('stock', 0) }}', 
+                base_price: '{{ old('base_price') }}' 
+            }">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="col-span-2">
                     <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <input type="text" name="name" id="name" x-model="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <p x-cloak x-show="name.length > 0 && name.length < 5" class="mt-1 text-sm text-red-600">Nama produk minimal 5 karakter.</p>
                     @error('name')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
@@ -34,13 +40,15 @@
 
                 <div>
                     <label for="stock" class="block text-sm font-medium text-gray-700">Stok</label>
-                    <input type="number" name="stock" id="stock" value="{{ old('stock', 0) }}" min="0" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <input type="number" name="stock" id="stock" x-model="stock" min="0" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <p x-cloak x-show="stock !== '' && (!Number.isInteger(Number(stock)) || Number(stock) < 0)" class="mt-1 text-sm text-red-600">Stok harus angka bulat dan tidak boleh negatif.</p>
                     @error('stock')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="base_price" class="block text-sm font-medium text-gray-700">Harga Dasar (Rp)</label>
-                    <input type="number" name="base_price" id="base_price" value="{{ old('base_price') }}" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <input type="number" name="base_price" id="base_price" x-model="base_price" min="0" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <p x-cloak x-show="base_price !== '' && Number(base_price) < 0" class="mt-1 text-sm text-red-600">Harga tidak boleh negatif.</p>
                     @error('base_price')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
