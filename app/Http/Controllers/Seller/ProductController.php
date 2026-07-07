@@ -16,8 +16,15 @@ class ProductController extends Controller
     public function index()
     {
         // For now, listing all products (should be filtered by auth()->user()->store_id later)
-        $products = Product::with('category')->latest()->paginate(10);
-        return view('seller.products.index', compact('products'));
+        $products = Product::with('category')
+            ->filter(request(['search', 'category', 'min_price', 'max_price']))
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $categories = Category::all();
+
+        return view('seller.products.index', compact('products', 'categories'));
     }
 
     /**

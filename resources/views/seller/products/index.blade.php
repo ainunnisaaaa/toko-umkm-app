@@ -10,7 +10,51 @@
         </div>
     </x-slot>
 
-    <div class="overflow-x-auto">
+    <div class="mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <form action="{{ route('seller.products.index') }}" method="GET" class="space-y-4 md:space-y-0 md:flex md:items-end md:space-x-4">
+            <div class="flex-1">
+                <label for="search" class="block text-sm font-medium text-gray-700">Cari Produk</label>
+                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Nama produk...">
+            </div>
+            
+            <div class="w-full md:w-48">
+                <label for="category" class="block text-sm font-medium text-gray-700">Kategori</label>
+                <select name="category" id="category" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="w-full md:w-32">
+                <label for="min_price" class="block text-sm font-medium text-gray-700">Min Harga</label>
+                <input type="number" name="min_price" id="min_price" value="{{ request('min_price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Min...">
+            </div>
+
+            <div class="w-full md:w-32">
+                <label for="max_price" class="block text-sm font-medium text-gray-700">Max Harga</label>
+                <input type="number" name="max_price" id="max_price" value="{{ request('max_price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Max...">
+            </div>
+
+            <div>
+                <button type="submit" class="w-full md:w-auto px-4 py-2 bg-gray-800 text-white border border-transparent rounded-md text-sm font-medium hover:bg-gray-700 transition">
+                    Filter
+                </button>
+            </div>
+            @if(request()->anyFilled(['search', 'category', 'min_price', 'max_price']))
+                <div>
+                    <a href="{{ route('seller.products.index') }}" class="block w-full md:w-auto px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition text-center">
+                        Reset
+                    </a>
+                </div>
+            @endif
+        </form>
+    </div>
+
+    <div class="overflow-x-auto bg-white shadow-sm rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>

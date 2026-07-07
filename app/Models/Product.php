@@ -19,4 +19,22 @@ class Product extends Model
     public function orderItems() { return $this->hasMany(OrderItem::class); }
     public function reviews() { return $this->hasMany(Review::class); }
 
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            return $query->where('name', 'like', '%' . $search . '%');
+        });
+
+        $query->when($filters['category'] ?? false, function ($query, $category) {
+            return $query->where('category_id', $category);
+        });
+
+        $query->when($filters['min_price'] ?? false, function ($query, $minPrice) {
+            return $query->where('base_price', '>=', $minPrice);
+        });
+
+        $query->when($filters['max_price'] ?? false, function ($query, $maxPrice) {
+            return $query->where('base_price', '<=', $maxPrice);
+        });
+    }
 }
