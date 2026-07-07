@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('base_price', 12, 2);
-            $table->decimal('discount_price', 12, 2);
+            $table->decimal('discount_price', 12, 2)->nullable();
             $table->integer('stock');
             $table->string('image');
             $table->boolean('is_active')->default(true);
