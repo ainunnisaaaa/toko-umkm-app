@@ -1,0 +1,143 @@
+// DBML Database Schema for TokoKita E-Commerce
+
+Table users {
+  id bigint [primary key, increment]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role varchar [note: "Enum: Admin, Penjual, Pembeli"]
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp // Laravel Soft Delete
+}
+
+Table password_reset_tokens {
+  email varchar [primary key]
+  token varchar
+  created_at timestamp
+}
+
+Table stores {
+  id bigint [primary key, increment]
+  user_id bigint [ref: > users.id]
+  name varchar
+  description text
+  address text
+  logo varchar
+  rating decimal(3, 2)
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp // Laravel Soft Delete
+}
+
+Table categories {
+  id bigint [primary key, increment]
+  name varchar
+  icon varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id bigint [primary key, increment]
+  store_id bigint [ref: > stores.id]
+  category_id bigint [ref: > categories.id]
+  name varchar
+  description text
+  base_price decimal(12, 2)
+  discount_price decimal(12, 2)
+  stock integer
+  image varchar
+  is_active boolean [default: true]
+  rating decimal(3, 2)
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp // Laravel Soft Delete
+}
+
+Table carts {
+  id bigint [primary key, increment]
+  user_id bigint [ref: > users.id]
+  product_id bigint [ref: > products.id]
+  quantity integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table wishlists {
+  id bigint [primary key, increment]
+  user_id bigint [ref: > users.id]
+  product_id bigint [ref: > products.id]
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (user_id, product_id) [unique, name: 'wishlists_user_id_product_id_unique']
+  }
+}
+
+Table orders {
+  id bigint [primary key, increment]
+  user_id bigint [ref: > users.id]
+  store_id bigint [ref: > stores.id]
+  subtotal decimal(12, 2)
+  shipping_cost decimal(12, 2)
+  total_amount decimal(12, 2)
+  status varchar [note: "Enum: Menunggu Pembayaran, Menunggu Verifikasi, Diproses, Dikirim, Selesai, Dibatalkan"]
+  payment_proof varchar
+  receipt_number varchar
+  shipping_address text
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp // Laravel Soft Delete
+
+  Indexes {
+    (store_id, status, created_at) [name: 'orders_store_id_status_created_at_index']
+    (status, created_at) [name: 'orders_status_created_at_index']
+  }
+}
+
+Table order_items {
+  id bigint [primary key, increment]
+  order_id bigint [ref: > orders.id]
+  product_id bigint [ref: > products.id]
+  quantity integer
+  price decimal(12, 2)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table shipping_rates {
+  id bigint [primary key, increment]
+  province varchar
+  city varchar
+  cost decimal(12, 2)
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reviews {
+  id bigint [primary key, increment]
+  order_id bigint [ref: > orders.id]
+  product_id bigint [ref: > products.id]
+  user_id bigint [ref: > users.id]
+  rating integer
+  comment text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sales_summaries {
+  id bigint [primary key, increment]
+  store_id bigint [ref: > stores.id, note: "Nullable, NULL for global platform report"]
+  report_date date
+  total_revenue decimal(12, 2)
+  total_orders integer
+  created_at timestamp
+  updated_at timestamp
+
+  Indexes {
+    (store_id, report_date) [unique, name: 'sales_summaries_store_id_report_date_unique']
+  }
+}
