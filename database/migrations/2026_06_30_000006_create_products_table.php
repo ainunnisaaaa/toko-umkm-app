@@ -25,6 +25,9 @@ return new class extends Migration
             $table->decimal('rating', 3, 2);
             $table->timestamps();
             $table->softDeletes();
+
+            // Index untuk optimasi laporan stok (memfilter berdasarkan store dan mengecualikan data terhapus)
+            $table->index(['store_id', 'deleted_at'], 'products_store_id_deleted_at_index');
         });
     }
 
