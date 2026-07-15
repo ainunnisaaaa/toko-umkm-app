@@ -53,6 +53,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('reports/platform-commissions-excel', [\App\Http\Controllers\Admin\ReportController::class, 'platformCommissionsExcel'])->name('reports.platform-commissions-excel');
     Route::get('sales-summaries/pdf', [SalesSummaryController::class, 'exportPdf'])->name('sales-summaries.pdf');
     Route::get('reviews/analysis', [\App\Http\Controllers\Admin\ReviewAnalysisController::class, 'index'])->name('reviews.analysis');
+    Route::get('seller-performance', [\App\Http\Controllers\Admin\SellerPerformanceController::class, 'index'])->name('seller-performance');
     Route::resource('users', UserController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('shipping-rates', ShippingRateController::class);

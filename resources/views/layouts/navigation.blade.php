@@ -15,6 +15,11 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(auth()->user()->role === 'admin')
+                    <x-nav-link :href="route('admin.seller-performance')" :active="request()->routeIs('admin.seller-performance')">
+                        {{ __('Performa Penjual') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +75,11 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(auth()->user()->role === 'admin')
+            <x-responsive-nav-link :href="route('admin.seller-performance')" :active="request()->routeIs('admin.seller-performance')">
+                {{ __('Performa Penjual') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
