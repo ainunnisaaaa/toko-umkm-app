@@ -21,7 +21,15 @@ class Product extends Model
 
     public function getImageUrlAttribute()
     {
-        return $this->image ? asset('storage/' . $this->image) : null;
+        if ($this->image && filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+        
+        if ($this->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->image)) {
+            return asset('storage/' . $this->image);
+        }
+        
+        return null;
     }
 
     public function scopeFilter($query, array $filters)

@@ -19,7 +19,11 @@ class Store extends Model
 
     public function getLogoUrlAttribute()
     {
-        return $this->logo ? asset('storage/' . $this->logo) : null;
+        if ($this->logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->logo)) {
+            return asset('storage/' . $this->logo);
+        }
+        
+        return null;
     }
 
 }
