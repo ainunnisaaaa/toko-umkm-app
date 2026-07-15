@@ -13,6 +13,24 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Fallback for uncompiled Tailwind classes -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            tokopedia: {
+                                DEFAULT: '#03AC0E',
+                                dark: '#008C0A',
+                                light: '#E5F7E6',
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
     </head>
     <body class="font-sans antialiased bg-gray-50 text-gray-900 flex flex-col min-h-screen">
         
@@ -23,7 +41,7 @@
                     <div class="flex">
                         <!-- Logo -->
                         <div class="shrink-0 flex items-center">
-                            <a href="{{ url('/') }}" class="text-2xl font-bold text-indigo-600">
+                            <a href="{{ url('/') }}" class="text-2xl font-bold text-tokopedia">
                                 TokoKita
                             </a>
                         </div>
@@ -33,7 +51,7 @@
                     <div class="flex items-center space-x-4">
                         @auth
                             <!-- User Role Badge -->
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800 uppercase tracking-wider">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-tokopedia-light text-tokopedia-dark uppercase tracking-wider">
                                 {{ auth()->user()->role }}
                             </span>
                             
@@ -72,9 +90,9 @@
                                 </div>
                             </div>
                         @else
-                            <a href="{{ route('login') }}" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition">Log in</a>
+                            <a href="{{ route('login') }}" class="text-sm font-medium text-gray-700 hover:text-tokopedia transition">Log in</a>
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="ml-4 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-md transition">Register</a>
+                                <a href="{{ route('register') }}" class="ml-4 text-sm font-medium text-white bg-tokopedia hover:bg-tokopedia-dark px-4 py-2 rounded-md transition">Register</a>
                             @endif
                         @endauth
                     </div>
@@ -177,5 +195,6 @@
                 </p>
             </div>
         </footer>
+        @stack('scripts')
     </body>
 </html>

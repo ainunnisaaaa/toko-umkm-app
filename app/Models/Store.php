@@ -17,4 +17,9 @@ class Store extends Model
     public function orders() { return $this->hasMany(Order::class); }
     public function salesSummaries() { return $this->hasMany(SalesSummary::class); }
 
+    public function getLogoUrlAttribute()
+    {
+        return $this->logo ? asset('storage/' . $this->logo) : null;
+    }
+
 }

@@ -23,7 +23,7 @@ class ReviewController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, \App\Services\ReviewService $reviewService)
     {
         $order_id = $request->query('order_id');
         $product_id = $request->query('product_id');
@@ -32,22 +32,17 @@ class ReviewController extends Controller
             abort(404);
         }
 
-        $order = Order::findOrFail($order_id);
+        $eligibility = $reviewService->validateReviewEligibility($order_id, $product_id, auth()->id());
+
+        if (!$eligibility['status']) {
+            if ($eligibility['code'] === 409) {
+                return redirect()->route('products.show', $product_id)->with('error', $eligibility['message']);
+            }
+            abort($eligibility['code'], $eligibility['message']);
+        }
+
+        $order = $eligibility['order'];
         $product = Product::findOrFail($product_id);
-
-        // Ensure the order belongs to the buyer and is completed
-        if ($order->user_id !== auth()->id() || $order->status !== 'Selesai') {
-            abort(403, 'Order is not eligible for review.');
-        }
-
-        // Check if review already exists
-        $existingReview = Review::where('order_id', $order_id)
-            ->where('product_id', $product_id)
-            ->first();
-
-        if ($existingReview) {
-            return redirect()->route('products.show', $product_id)->with('error', 'Anda sudah memberikan ulasan untuk produk ini pada pesanan tersebut.');
-        }
 
         return view('buyer.reviews.create', compact('order', 'product'));
     }
@@ -55,18 +50,15 @@ class ReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreReviewRequest $request)
+    public function store(StoreReviewRequest $request, \App\Services\ReviewService $reviewService)
     {
         $validated = $request->validated();
         
-        $order = Order::findOrFail($validated['order_id']);
-        if ($order->user_id !== auth()->id() || $order->status !== 'Selesai') {
-            abort(403, 'Order is not eligible for review.');
+        try {
+            $reviewService->createReview($validated, auth()->id());
+        } catch (\Exception $e) {
+            abort($e->getCode() ?: 403, $e->getMessage());
         }
-
-        $validated['user_id'] = auth()->id();
-        
-        Review::create($validated);
 
         return redirect()->route('products.show', $validated['product_id'])
             ->with('success', 'Ulasan berhasil ditambahkan.');

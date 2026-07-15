@@ -14,7 +14,8 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //
+        $stores = Store::where('user_id', auth()->id())->paginate(10);
+        return view('seller.stores.index', compact('stores'));
     }
 
     /**
@@ -22,7 +23,7 @@ class StoreController extends Controller
      */
     public function create()
     {
-        //
+        return view('seller.stores.create');
     }
 
     /**
@@ -30,7 +31,10 @@ class StoreController extends Controller
      */
     public function store(StoreStoreRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+        Store::create($data);
+        return redirect()->route('seller.stores.index')->with('success', 'Toko berhasil ditambahkan.');
     }
 
     /**
@@ -38,7 +42,8 @@ class StoreController extends Controller
      */
     public function show(Store $store)
     {
-        //
+        $this->authorizeStoreAccess($store);
+        return view('seller.stores.show', compact('store'));
     }
 
     /**
@@ -46,7 +51,8 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        //
+        $this->authorizeStoreAccess($store);
+        return view('seller.stores.edit', compact('store'));
     }
 
     /**
@@ -54,7 +60,9 @@ class StoreController extends Controller
      */
     public function update(UpdateStoreRequest $request, Store $store)
     {
-        //
+        $this->authorizeStoreAccess($store);
+        $store->update($request->validated());
+        return redirect()->route('seller.stores.index')->with('success', 'Toko berhasil diperbarui.');
     }
 
     /**
@@ -62,6 +70,15 @@ class StoreController extends Controller
      */
     public function destroy(Store $store)
     {
-        //
+        $this->authorizeStoreAccess($store);
+        $store->delete();
+        return redirect()->route('seller.stores.index')->with('success', 'Toko berhasil dihapus.');
+    }
+
+    private function authorizeStoreAccess(Store $store)
+    {
+        if ($store->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

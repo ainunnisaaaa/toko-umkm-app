@@ -1,66 +1,110 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TokoKita - E-Commerce UMKM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**TokoKita** adalah sebuah platform aplikasi web e-commerce yang dirancang khusus untuk memfasilitasi Usaha Mikro, Kecil, dan Menengah (UMKM). Platform ini memungkinkan pemilik usaha kecil untuk membuka toko online, mempublikasikan produk, mengelola operasional penjualan, serta menerima pembayaran dari pelanggan umum.
 
-## About Laravel
+## 🚀 Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Modul Autentikasi & Otorisasi**: Registrasi, Login, Manajemen Profil untuk berbagai peran (Admin, Seller, Customer).
+- **Modul Pemilik Toko (Seller Dashboard)**: 
+  - Manajemen Produk (Stok, Harga, Foto)
+  - Manajemen Pesanan (Status pengiriman, Resi)
+  - Laporan & Analitik (Pendapatan harian/mingguan/bulanan, Produk terlaris)
+- **Modul Pembeli (Customer)**: 
+  - Eksplorasi & Pencarian Produk
+  - Keranjang Belanja (Cart)
+  - Checkout & Pembayaran
+  - Pelacakan Pesanan
+- **Modul Admin Sistem**: 
+  - Dashboard Admin (Statistik pengguna, toko, transaksi)
+  - Manajemen Pengguna & Toko UMKM
+  - Manajemen Kategori Global
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Tumpukan Teknologi (Tech Stack)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend**: Laravel 10 (PHP)
+- **Database**: MySQL
+- **Frontend**: Blade Templating, Tailwind CSS, Alpine.js
+- **Testing**: Playwright (E2E Testing)
 
-## Learning Laravel
+## 📸 Tangkapan Layar (Screenshots)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Halaman Beranda (Home)
+![Home Page](docs/screenshots/01-home.png)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Halaman Login
+![Login Page](docs/screenshots/02-login.png)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Halaman Registrasi
+![Register Page](docs/screenshots/03-register.png)
 
-## Laravel Sponsors
+### Dashboard Penjual (Seller)
+![Dashboard Page](docs/screenshots/04-dashboard.png)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## ⚙️ Langkah Instalasi
 
-### Premium Partners
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi di lingkungan pengembangan lokal Anda:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+1. Clone repositori ini:
+   ```bash
+   git clone <repository_url>
+   cd toko-umkm-app
+   ```
+2. Instal dependensi PHP menggunakan Composer:
+   ```bash
+   composer install
+   ```
+3. Instal dependensi Node.js menggunakan NPM:
+   ```bash
+   npm install
+   ```
+4. Salin file konfigurasi environment:
+   ```bash
+   cp .env.example .env
+   ```
+5. Hasilkan *application key* Laravel:
+   ```bash
+   php artisan key:generate
+   ```
+6. Sesuaikan konfigurasi database pada file `.env`:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=tokokita
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+7. Jalankan migrasi dan seeder database:
+   ```bash
+   php artisan migrate --seed
+   ```
+8. Kompilasi aset frontend (jalankan di terminal terpisah):
+   ```bash
+   npm run dev
+   ```
+9. Jalankan *development server* Laravel:
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi sekarang dapat diakses di `http://localhost:8000`
 
-## Contributing
+## 🧪 Cara Menjalankan Test Playwright
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Untuk menjalankan *End-to-End Testing* menggunakan Playwright, gunakan perintah berikut:
 
-## Code of Conduct
+```bash
+npx playwright test
+```
+*Catatan: Pastikan aplikasi sudah berjalan (menggunakan `php artisan serve`) sebelum menjalankan test.*
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🔒 Status Keamanan dan Audit Repositori
 
-## Security Vulnerabilities
+- **Pemeriksaan `.gitignore`**: File sensitif seperti `.env`, folder `vendor`, `node_modules`, direktori build (`public/build`), serta log (`storage/logs`) telah ditambahkan dan dikecualikan dari Git tracking.
+- **Audit Riwayat Git (Credentials)**: Berdasarkan pemeriksaan *git commit history*, **tidak ditemukan** penyusupan atau commit tidak sengaja untuk kredensial `.env` maupun *hardcoded secrets*.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 👨‍💻 Informasi Penulis
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Nama**: ainunnisaaaa
+- **NIM**: [NIM Anda - Harap Diisi]
+- **Prodi**: [Prodi Anda - Harap Diisi]
+- **Email Akademik**: ainunnisa60268@gmail.com

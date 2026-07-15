@@ -29,11 +29,10 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request, \App\Services\UserService $userService)
     {
         $validated = $request->validated();
-        $validated['password'] = bcrypt($validated['password']);
-        User::create($validated);
+        $userService->createUser($validated);
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
@@ -56,15 +55,10 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user, \App\Services\UserService $userService)
     {
         $validated = $request->validated();
-        if (!empty($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
-        } else {
-            unset($validated['password']);
-        }
-        $user->update($validated);
+        $userService->updateUser($user, $validated);
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 

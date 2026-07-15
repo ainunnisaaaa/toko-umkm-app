@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
@@ -39,17 +40,17 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request, \App\Services\ProductService $productService)
     {
         $validated = $request->validated();
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
-        $validated['is_active'] = $request->has('is_active');
-        $validated['store_id'] = auth()->user()->store->id;
-        $validated['rating'] = 0;
+        
+        $productService->createProduct(
+            $validated,
+            $request->file('image'),
+            auth()->user()->store->id,
+            $request->has('is_active')
+        );
 
-        Product::create($validated);
         return redirect()->route('seller.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
@@ -73,15 +74,17 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product, \App\Services\ProductService $productService)
     {
         $validated = $request->validated();
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
-        $validated['is_active'] = $request->has('is_active');
         
-        $product->update($validated);
+        $productService->updateProduct(
+            $product,
+            $validated,
+            $request->file('image'),
+            $request->has('is_active')
+        );
+
         return redirect()->route('seller.products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
@@ -92,5 +95,36 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('seller.products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+    /**
+     * Export PDF report for product stock
+     */
+    public function exportPdf()
+    {
+        $storeId = auth()->user()->store->id ?? null;
+        if (!$storeId) {
+            abort(403, 'Anda belum memiliki toko.');
+        }
+
+        $products = Product::with('category')
+            ->where('store_id', $storeId)
+            ->latest()
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.product-stock', compact('products'));
+        return $pdf->download('laporan-stok-produk.pdf');
+    }
+
+    /**
+     * Export Excel report for product stock
+     */
+    public function exportExcel()
+    {
+        $storeId = auth()->user()->store->id ?? null;
+        if (!$storeId) {
+            abort(403, 'Anda belum memiliki toko.');
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\InventoryExport($storeId), 'laporan-stok-produk.xlsx');
     }
 }

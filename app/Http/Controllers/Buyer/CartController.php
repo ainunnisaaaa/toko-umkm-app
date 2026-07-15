@@ -14,7 +14,8 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $carts = Cart::with('product')->where('user_id', auth()->id())->get();
+        return view('buyer.carts.index', compact('carts'));
     }
 
     /**
@@ -22,7 +23,8 @@ class CartController extends Controller
      */
     public function create()
     {
-        //
+        // Typically not used directly. Carts are added from Product page.
+        abort(404);
     }
 
     /**
@@ -30,7 +32,20 @@ class CartController extends Controller
      */
     public function store(StoreCartRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+        
+        $cart = Cart::where('user_id', auth()->id())
+                    ->where('product_id', $data['product_id'])
+                    ->first();
+                    
+        if ($cart) {
+            $cart->increment('quantity', $data['quantity']);
+        } else {
+            Cart::create($data);
+        }
+        
+        return back()->with('success', 'Produk berhasil ditambahkan ke keranjang.');
     }
 
     /**
@@ -38,7 +53,7 @@ class CartController extends Controller
      */
     public function show(Cart $cart)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -46,7 +61,7 @@ class CartController extends Controller
      */
     public function edit(Cart $cart)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -54,7 +69,9 @@ class CartController extends Controller
      */
     public function update(UpdateCartRequest $request, Cart $cart)
     {
-        //
+        $this->authorizeCartAccess($cart);
+        $cart->update($request->validated());
+        return redirect()->route('buyer.carts.index')->with('success', 'Keranjang berhasil diperbarui.');
     }
 
     /**
@@ -62,6 +79,15 @@ class CartController extends Controller
      */
     public function destroy(Cart $cart)
     {
-        //
+        $this->authorizeCartAccess($cart);
+        $cart->delete();
+        return redirect()->route('buyer.carts.index')->with('success', 'Produk dihapus dari keranjang.');
+    }
+
+    private function authorizeCartAccess(Cart $cart)
+    {
+        if ($cart->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

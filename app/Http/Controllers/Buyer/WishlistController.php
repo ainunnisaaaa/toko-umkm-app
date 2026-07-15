@@ -14,7 +14,8 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        //
+        $wishlists = Wishlist::with('product')->where('user_id', auth()->id())->paginate(12);
+        return view('buyer.wishlists.index', compact('wishlists'));
     }
 
     /**
@@ -22,7 +23,7 @@ class WishlistController extends Controller
      */
     public function create()
     {
-        //
+        abort(404);
     }
 
     /**
@@ -30,7 +31,12 @@ class WishlistController extends Controller
      */
     public function store(StoreWishlistRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['user_id'] = auth()->id();
+        
+        Wishlist::firstOrCreate($data);
+        
+        return back()->with('success', 'Produk ditambahkan ke wishlist.');
     }
 
     /**
@@ -38,7 +44,7 @@ class WishlistController extends Controller
      */
     public function show(Wishlist $wishlist)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -46,7 +52,7 @@ class WishlistController extends Controller
      */
     public function edit(Wishlist $wishlist)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -54,7 +60,7 @@ class WishlistController extends Controller
      */
     public function update(UpdateWishlistRequest $request, Wishlist $wishlist)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -62,6 +68,15 @@ class WishlistController extends Controller
      */
     public function destroy(Wishlist $wishlist)
     {
-        //
+        $this->authorizeWishlistAccess($wishlist);
+        $wishlist->delete();
+        return back()->with('success', 'Produk dihapus dari wishlist.');
+    }
+
+    private function authorizeWishlistAccess(Wishlist $wishlist)
+    {
+        if ($wishlist->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

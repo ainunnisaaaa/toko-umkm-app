@@ -14,6 +14,13 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                tokopedia: {
+                    DEFAULT: '#03AC0E',
+                    dark: '#008C0A',
+                    light: '#E5F7E6',
+                },
+            },
         },
     },
 

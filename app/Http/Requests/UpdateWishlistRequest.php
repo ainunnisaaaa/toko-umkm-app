@@ -11,7 +11,7 @@ class UpdateWishlistRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class UpdateWishlistRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // Usually not updated, just deleted or created
         ];
     }
 }

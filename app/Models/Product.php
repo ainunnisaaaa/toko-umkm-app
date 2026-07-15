@@ -19,6 +19,11 @@ class Product extends Model
     public function orderItems() { return $this->hasMany(OrderItem::class); }
     public function reviews() { return $this->hasMany(Review::class); }
 
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'] ?? false, function ($query, $search) {

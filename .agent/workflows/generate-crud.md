@@ -42,23 +42,29 @@ Saat menjalankan workflow ini, pastikan Anda mengetahui:
 3. Ubah metode `authorize()` menjadi `return true;`.
 4. Definisikan aturan validasi (rules) pada metode `rules()`.
 
-## Langkah 4: Buat Controller
+## Langkah 4: Buat Service Layer (Opsional/Direkomendasikan)
+Jika entitas memiliki logika bisnis yang kompleks (misal: upload file, kalkulasi, kondisi khusus saat menyimpan data), pisahkan logika tersebut ke dalam Service class.
+1. Buat file Service baru di `app/Services/` (contoh: `[NamaModel]Service.php`).
+2. Definisikan metode untuk menangani logika bisnis (contoh: `create[NamaModel](array $data)`, `update[NamaModel]([NamaModel] $model, array $data)`).
+3. Pindahkan logika dari Controller ke dalam Service class ini.
+
+## Langkah 5: Buat Controller
 1. Buat resource controller dengan namespace role yang sesuai:
    ```bash
    php artisan make:controller [Role]/[NamaModel]Controller --resource --model=[NamaModel]
    ```
 2. Buka controller di `app/Http/Controllers/[Role]/`.
-3. Sesuaikan import model dan Form Request (`Store[NamaModel]Request`, `Update[NamaModel]Request`).
+3. Sesuaikan import model, Form Request (`Store[NamaModel]Request`, `Update[NamaModel]Request`), dan Service class jika dibuat.
 4. Implementasikan metode CRUD:
    - `index()`: Ambil data (biasanya dengan pagination `paginate(10)`) dan return view `[role].[tabel].index`.
    - `create()`: Return view `[role].[tabel].create`.
-   - `store()`: Validasi request `$request->validated()`, `Model::create()`, redirect dengan pesan sukses (flash message).
+   - `store()`: Validasi request `$request->validated()`, delegasikan ke Service class (jika ada) atau panggil `Model::create()`, redirect dengan pesan sukses (flash message).
    - `show()`: Return view `[role].[tabel].show`.
    - `edit()`: Return view `[role].[tabel].edit`.
-   - `update()`: Validasi request, `Model->update()`, redirect dengan pesan sukses.
+   - `update()`: Validasi request, delegasikan ke Service class (jika ada) atau panggil `Model->update()`, redirect dengan pesan sukses.
    - `destroy()`: `Model->delete()`, redirect dengan pesan sukses.
 
-## Langkah 5: Daftarkan Route
+## Langkah 6: Daftarkan Route
 1. Buka file `routes/web.php`.
 2. Tambahkan statement `use` untuk controller yang baru dibuat di bagian atas file, di bawah komentar `// [Role] Controllers`.
 3. Temukan blok route middleware group untuk role yang sesuai (contoh: `Route::middleware(['auth', 'role:admin'])->prefix('admin')->...`).
@@ -67,7 +73,7 @@ Saat menjalankan workflow ini, pastikan Anda mengetahui:
    Route::resource('[nama_tabel_atau_url]', [NamaModel]Controller::class);
    ```
 
-## Langkah 6: Buat View CRUD (Blade + Tailwind CSS)
+## Langkah 7: Buat View CRUD (Blade + Tailwind CSS)
 1. Buat folder untuk view di `resources/views/[role]/[nama_tabel]/`.
 2. Buat empat file Blade: `index.blade.php`, `create.blade.php`, `edit.blade.php`, dan `show.blade.php`.
 3. Gunakan `<x-app-layout>` sebagai master layout, dengan `<x-slot name="header">`.
